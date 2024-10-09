@@ -1,0 +1,12 @@
+[submodule "src/third_party/AnyLoc"]
+	path = src/third_party/AnyLoc
+	url = https://github.com/jamesjin0516/AnyLoc.git
+[submodule "src/third_party/MixVPR"]
+	path = src/third_party/MixVPR
+	url = https://github.com/jamesjin0516/MixVPR.git
+[submodule "src/third_party/salad"]
+	path = src/third_party/salad
+	url = https://github.com/jamesjin0516/salad.git
+[submodule "src/third_party/CricaVPR"]
+	path = src/third_party/CricaVPR
+	url = https://github.com/jamesjin0516/CricaVPR.git
