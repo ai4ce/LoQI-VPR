@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description"
+        content="Distillation Improves Visual Place Recognition for Low Quality Images">
+  <meta name="keywords" content="Visual Place Recognition, Knowledge Distillation, Resource-Constrained Environments">     
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LOQI-VPR</title>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+        rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="static/css/index.css">
+
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+  <script src="./static/js/copy2clipboard.js"></script>
+  <script type="text/javascript" async
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
+    </script>
+  
+  <script src="https://cdn.knightlab.com/libs/juxtapose/latest/js/juxtapose.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.knightlab.com/libs/juxtapose/latest/css/juxtapose.css">
+</head>
+
+
+<body>
+
+<!-- Navigation bar. -->
+<nav class="navbar is-light" role="navigation" aria-label="main navigation">
+  <div class="container is-max-desktop">
+
+    <!-- Lab logo. Will stay here even if view from mobile -->
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://ai4ce.github.io/" target="_blank" rel="noopener noreferrer">
+        <img src="./static/images/ai4ce_new_linear_notext.svg" alt="AI4CE Lab" style="height: 2.0rem;">
+      </a>
+      <a role="button" onclick="this.classList.toggle('is-active');document.querySelector('#'+this.dataset.target).classList.toggle('is-active');" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </a>
+    </div>
+
+    <!-- Will collapse into a "burger" menu on mobile. -->
+    <div id="navbarBasicExample" class="navbar-menu">
+
+      <div class="navbar-start">
+        <a class="navbar-item" href="https://www.nyu.edu/" target="_blank">
+          <img src="./static/images/NYU_Long_RGB_Color.png" alt="NYU Logo" style="height: 2.0rem;">
+        </a>
+      </div>
+      
+
+      <div class="navbar-end">
+        <!-- After accepted, add conference logo here -->
+        <!-- <a class="navbar-item" href="https://cvpr.thecvf.com/Conferences/2024" target="_blank" rel="noopener noreferrer">
+            <img src="img/logo/logo-cvpr.png" alt="CVPR 2024" style="height: 2.0rem;">
+        </a> -->
+
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link">
+            More Research
+          </a>
+          <div class="navbar-dropdown">
+            <!-- <a class="navbar-item" href="https://ai4ce.github.io/DeepExplorer/">
+              DeepExplorer
+            </a>
+            <a class="navbar-item" href="https://ai4ce.github.io/EgoPAT3Dv2/">
+              EgoPAT3Dv2
+            </a> -->
+          </div>
+        </div>
+
+      </div>
+      
+    </div>
+
+  </div>
+</nav>
+
+<!-- Title and authors. -->
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-1 publication-title">
+            LOQI-VPR
+          </h1>
+          <h1 class="title is-2 publication-title">Distillation Improves Visual Place Recognition for Low Quality Images</h1>
+          <!-- <div class="column is-full_width">
+            <h2 class="title is-4"><a href="https://2025.ieee-icra.org">ICRA 2025 (Under Review)</a></h2>
+          </div> -->
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">
+              <a href="https://www.linkedin.com/in/anbang-yang/">Anbang Yang*</a>,</span>
+            <span class="author-block">
+              <a href="https://www.linkedin.com/in/ge-james-jin">Ge Jin*</a>,</span>
+            <span class="author-block">
+              <a href="https:">Junjie Huang</a>,
+            </span>
+            <span class="author-block">
+              <a href="https://scholar.google.com/citations?user=AnALXFcAAAAJ&hl=en&oi=ao">Yao Wang</a>,
+            </span>
+            <span class="author-block">
+              <a href="https://scholar.google.com/citations?user=TmPZ5uEAAAAJ&hl=en&oi=ao">John-Ross Rizzo</a>,
+            </span>
+            <span class="author-block">
+              <a href="https://scholar.google.com/citations?user=YeG8ZM0AAAAJ">Chen Feng</a>
+            </span>
+          </div>
+
+          <div class="is-size-5 publication-authors">
+            <span class="author-block"><sup></sup> New York University </span>
+          </div>
+
+
+
+          <div class="column has-text-centered">
+            <div class="publication-links">
+              <span class="link-block">
+                 <!-- add here later. -->
+                <a href="https://arxiv.org/pdf/2310.06906"                
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="ai ai-arxiv"></i>
+                  </span>
+                  <span>arXiv</span>
+                </a>
+              </span>
+              <!-- <span class="link-block"> -->
+                <!-- add here later. -->
+               <!-- <a href=""                    
+                  class="external-link button is-normal is-rounded is-dark">
+                 <span class="icon">
+                     <i class="fas fa-camera"></i>
+                 </span>
+                 <span>Appendix</span>
+               </a> -->
+             <!-- </span> -->
+              <!-- Video Link. -->
+              <!-- <span class="link-block">
+                <a href="https://youtu.be/thC0PeAQxe0"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-youtube"></i>
+                  </span>
+                  <span>Video</span>
+                </a>
+              </span> -->
+              <!-- Code Link. -->
+              <span class="link-block">
+                <a href="https://github.com/ai4ce/LoQI-VPR"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-github"></i>
+                  </span>
+                  <span>Code</span>
+                  </a>
+              </span>
+              <!-- Dataset Link. -->
+              <!-- <span class="link-block">
+                <a href="https://huggingface.co/datasets/ai4ce/EgoPAT3Dv2"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="far fa-images"></i>
+                  </span>
+                  <span>Data</span>
+                </a>
+              </span> -->
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Teaser. -->
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-full-width teaser no-margin">
+        
+        <h2 class="title is-3">Snapshot</h2>
+        <p style="font-size: 20px; background-color: #8b00e13b;">
+          A <b>knowledge-distillation</b> approach enhances <b>visual place recognition</b> accuracy under <b>low-quality images</b> by learning from high-quality data, achieving significant recall rate improvements across diverse VPR methods and datasets.
+        </p>
+        <br>
+        
+        <div class="image-container">
+          <img src="./static/images/figure1_retrieval.png" alt="Retrieval Figure" style="width: 100%; max-width: 600px;">
+        </div>
+        
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr>
+
+<!-- Method Overview -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3 has-text-centered">Method</h2>
+        <center>
+          <!-- Main overview image always visible -->
+          <div id="overview">
+            <img src="./static/images/figure2.png" style="width: 45vw; min-width: 330px;" alt="Overview Image">
+          </div>
+
+          <!-- Buttons to switch between content -->
+          <button id="method_button1" class="btn" onclick="changeContent(1)">1. Distillation Architecture</button>
+          <button id="method_button2" class="btn" onclick="changeContent(2)">2. Losses</button>
+
+          <div class="content has-text-justified">
+            <p id="text-content">
+              <b>Distillation Architecture:</b> Our goal was to enhance existing VPR methods to extract more representative global descriptors from lower-quality images. Thus, we apply knowledge distillation techniques at the descriptor extraction level of VPR. For any VPR method, we aim to allow a student descriptor extractor handling low-quality images to approximate the output of its teacher counterpart, handling high-quality images.
+            </p>
+          </div>
+        </center>
+
+        <script>
+          document.getElementById('method_button1').classList.add('active');
+          function changeContent(buttonNumber) {
+              const textElement = document.getElementById('text-content');
+
+              // Reset active class for buttons
+              document.getElementById('method_button1').classList.remove('active');
+              document.getElementById('method_button2').classList.remove('active');
+
+              // Set the active class for the selected button
+              document.getElementById('method_button' + buttonNumber).classList.add('active');
+
+              if (buttonNumber === 1) {
+                  textElement.innerHTML = `<b>Distillation Architecture:</b> 
+                                           Our goal was to enhance existing VPR methods to extract more representative global descriptors from lower-quality images. Thus, we apply knowledge distillation techniques at the descriptor extraction level of VPR. For any VPR method, we aim to allow a student descriptor extractor handling low-quality images to approximate the output of its teacher counterpart, handling high-quality images. 
+                                           <br><br>Given some VPR method, we initialize it twice to form the teacher branch \\( f_t \\) and student branch \\( f_s \\), processing high-quality image \\( I^h \\) and its low-quality counterpart \\( I^l \\) respectively. As illustrated by fig. \\( \\ref{fig:distillation} \\), we conceptualize the teacher model as consisting of a feature encoder \\( f^{\\theta}_t \\) and descriptor aggregator \\( g^{\\phi}_t \\). Likewise, the student consists of a structurally identical encoder \\( f^{\\theta}_s \\) and aggregator \\( g^{\\phi}_s \\). Between the encoder and aggregator, the student and teacher branch generates 3D latent code \\( z^l \\) and \\( z^h \\), respectively. Finally, both branches aggregate their latent codes into global descriptors \\( v^l \\) and \\( v^h \\).`;
+              } else if (buttonNumber === 2) {
+                  textElement.innerHTML = `<b>Losses:</b> Our distillation methodology has three loss functions: 
+                                           <br><br><b>ICKD Loss:</b> Inter-Channel Correlation Knowledge Distillation (ICKD) loss operates on the latent codes \\( z^l \\) and \\( z^h \\), producing a standard-size Inter-Channel Correlation (ICC) matrix for both encoders, allowing the student to approximate the teacher's latent features. 
+                                           <br><br><b>MSE Loss:</b> The Mean Squared Error (MSE) loss directly compares the global descriptors \\( v^l \\) and \\( v^h \\), training the student to match the teacher’s outputs. 
+                                           <br><br><b>Triplet Loss:</b> The weakly supervised triplet ranking loss ensures the student’s descriptor for a given image is closer to a positive, geographically proximate descriptor than to a distant, negative one.`;
+              }
+              MathJax.typeset(); // Rerender math equations after content change
+          }
+        </script>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr>
+
+<!-- Performance Table Section -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3 has-text-centered">Performance Improvements after Distillation</h2>
+        <p class="has-text-justified" style="font-size: 16px;">
+          For low-quality images, the loss combination producing the highest recall rate is compared against the baseline of fine-tuning. For both distilled and fine-tuned weights, the change in VPR recall is represented as a delta relative to the performance of each method using pretrained weights. Within each dataset and method, <span style="color: #548330;">green</span> text indicates the greatest improvement for every R@N, whereas any decrease relative to pretrained performance is marked as <span style="color: #9C0006;">red</span>. The recall rates using pretrained weights on unmodified high-quality images (\( I^h \)) are provided as a reference.
+        </p>
+        
+        <div class="table-wrapper" style="display: flex; justify-content: center; padding: 20px;">
+          <table class="table is-bordered" style="margin: 0 auto; max-width: 90%; font-size: 14px; border-spacing: 5px;">
+            <thead>
+              <tr>
+                <th rowspan="2" style="text-align: center; padding: 5px;">VPR Methods</th>
+                <th rowspan="2" style="text-align: center; padding: 5px; border-right: 2px solid black;">Configuration</th>
+                <th colspan="4" style="text-align: center; padding: 5px; border-right: 2px solid black;">Mapillary SLS</th>
+                <th colspan="4" style="text-align: center; padding: 5px; border-right: 2px solid black;">Nordland</th>
+                <th colspan="4" style="text-align: center; padding: 5px; border-right: 2px solid black;">Tokyo 24/7</th>
+              </tr>
+              <tr style="border-bottom: 2px solid black;">
+                <th style="text-align: center; padding: 5px;">R@1</th>
+                <th style="text-align: center; padding: 5px;">R@2</th>
+                <th style="text-align: center; padding: 5px;">R@5</th>
+                <th style="text-align: center; padding: 5px; border-right: 2px solid black;">R@10</th>
+                <th style="text-align: center; padding: 5px;">R@1</th>
+                <th style="text-align: center; padding: 5px;">R@2</th>
+                <th style="text-align: center; padding: 5px;">R@5</th>
+                <th style="text-align: center; padding: 5px; border-right: 2px solid black;">R@10</th>
+                <th style="text-align: center; padding: 5px;">R@1</th>
+                <th style="text-align: center; padding: 5px;">R@2</th>
+                <th style="text-align: center; padding: 5px;">R@5</th>
+                <th style="text-align: center; padding: 5px; border-right: 2px solid black;">R@10</th>
+              </tr>
+            </thead>            
+            <tbody>
+              <!-- MixVPR Rows -->
+              <tr>
+                <td rowspan="4" style="border-right: 2px solid black; padding: 5px;">MixVPR</td>
+                <td style="color: #A6A6A6; border-right: 2px solid black; padding: 5px;">pretrained (\( I^h \))</td>
+                <td style="color: #A6A6A6;">82.73</td><td style="color: #A6A6A6;">86.67</td><td style="color: #A6A6A6;">89.73</td><td style="color: #A6A6A6; border-right: 2px solid black;">91.65</td>
+                <td style="color: #A6A6A6;">57.79</td><td style="color: #A6A6A6;">64.13</td><td style="color: #A6A6A6;">71.49</td><td style="color: #A6A6A6; border-right: 2px solid black;">76.41</td>
+                <td style="color: #A6A6A6;">87.30</td><td style="color: #A6A6A6;">89.52</td><td style="color: #A6A6A6;">92.06</td><td style="color: #A6A6A6; border-right: 2px solid black;">93.65</td>
+              </tr>
+              <tr>
+                <td style="border-right: 2px solid black; padding: 5px;">pretrained (\( I^l \))</td>
+                <td>71.87</td><td>76.61</td><td>81.22</td><td style="border-right: 2px solid black;">84.19</td>
+                <td>31.05</td><td>36.12</td><td>44.13</td><td style="border-right: 2px solid black;">51.23</td>
+                <td>66.03</td><td>73.33</td><td>78.73</td><td style="border-right: 2px solid black;">82.22</td>
+              </tr>
+              <tr>
+                <td style="border-right: 2px solid black; padding: 5px;">finetuned</td>
+                <td style="color: #548330;">+4.43</td><td style="color: #548330;">+3.86</td><td style="color: #548330;">+3.60</td><td style="color: #548330; border-right: 2px solid black;">+2.99</td>
+                <td>+13.37</td><td>+14.28</td><td>+14.64</td><td style="border-right: 2px solid black;">+14.46</td>
+                <td style="color: #548330;">+9.52</td><td style="color: #548330;">+7.62</td><td>+6.03</td><td style="border-right: 2px solid black;">+5.40</td>
+              </tr>
+              <tr style="border-bottom: 2px solid black;">
+                <td style="border-right: 2px solid black; padding: 5px;"><b>ICKD</b></td>
+                <td><b>+4.33</b></td><td><b>+3.69</b></td><td><b>+3.20</b></td><td style="border-right: 2px solid black;"><b>+2.93</b></td>
+                <td><b style="color: #548330;">+15.00</b></td><td><b style="color: #548330;">+16.59</b></td><td><b style="color: #548330;">+16.78</b></td><td style="color: #548330; border-right: 2px solid black;"><b>+15.94</b></td>
+                <td><b>+8.25</b></td><td><b>+6.03</b></td><td><b style="color: #548330;">+6.35</b></td><td style="color: #548330; border-right: 2px solid black;"><b>+6.67</b></td>
+              </tr>
+
+              <!-- CricaVPR Rows -->
+              <tr>
+                <td rowspan="4" style="border-right: 2px solid black; padding: 5px;">CricaVPR</td>
+                <td style="color: #A6A6A6; border-right: 2px solid black; padding: 5px;">pretrained (\( I^h \))</td>
+                <td style="color: #A6A6A6;">74.74</td><td style="color: #A6A6A6;">80.92</td><td style="color: #A6A6A6;">86.09</td><td style="color: #A6A6A6; border-right: 2px solid black;">88.75</td>
+                <td style="color: #A6A6A6;">87.64</td><td style="color: #A6A6A6;">90.65</td><td style="color: #A6A6A6;">94.24</td><td style="color: #A6A6A6; border-right: 2px solid black;">95.80</td>
+                <td style="color: #A6A6A6;">90.16</td><td style="color: #A6A6A6;">92.38</td><td style="color: #A6A6A6;">95.56</td><td style="color: #A6A6A6; border-right: 2px solid black;">96.19</td>
+              </tr>
+              <tr>
+                <td style="border-right: 2px solid black; padding: 5px;">pretrained (\( I^l \))</td>
+                <td>68.14</td><td>74.41</td><td>80.24</td><td style="border-right: 2px solid black;">83.19</td>
+                <td>63.51</td><td>69.71</td><td>77.46</td><td style="border-right: 2px solid black;">82.64</td>
+                <td>74.29</td><td>79.68</td><td>84.76</td><td style="border-right: 2px solid black;">87.94</td>
+              </tr>
+              <tr>
+                <td style="border-right: 2px solid black; padding: 5px;">finetuned</td>
+                <td style="color: #9C0006;">-0.12</td><td style="color: #9C0006;">-0.64</td><td style="color: #9C0006;">-0.77</td><td style="color: #9C0006; border-right: 2px solid black;">-0.23</td>
+                <td style="color: #9C0006;">-2.97</td><td style="color: #9C0006;">-2.93</td><td style="color: #9C0006;">-2.97</td><td style="color: #9C0006; border-right: 2px solid black;">-2.79</td>
+                <td>+5.08</td><td>+4.44</td><td>+2.54</td><td style="border-right: 2px solid black;">+1.90</td>
+              </tr>
+              <tr style="border-bottom: 2px solid black;">
+                <td style="border-right: 2px solid black; padding: 5px;"><b>ICKD</b></td>
+                <td style="color: #548330;"><b>+0.89</b></td><td style="color: #548330;"><b>+1.39</b></td><td style="color: #548330;"><b>+1.11</b></td><td style="color: #548330; border-right: 2px solid black;"><b>+1.14</b></td>
+                <td style="color: #548330;"><b>+11.63</b></td><td style="color: #548330;"><b>+10.80</b></td><td style="color: #548330;"><b>+8.95</b></td><td style="color: #548330; border-right: 2px solid black;"><b>+7.03</b></td>
+                <td style="color: #548330;"><b>+6.98</b></td><td style="color: #548330;"><b>+5.08</b></td><td style="color: #548330;"><b>+6.03</b></td><td style="color: #548330; border-right: 2px solid black;"><b>+4.76</b></td>
+              </tr>
+
+              <!-- DINOv2 SALAD Rows -->
+              <tr>
+                <td rowspan="4" style="border-right: 2px solid black; padding: 5px;">DINOv2 SALAD</td>
+                <td style="color: #A6A6A6; border-right: 2px solid black; padding: 5px;">pretrained (\( I^h \))</td>
+                <td style="color: #A6A6A6;">89.20</td><td style="color: #A6A6A6;">92.40</td><td style="color: #A6A6A6;">94.70</td><td style="color: #A6A6A6; border-right: 2px solid black;">95.84</td>
+                <td style="color: #A6A6A6;">88.08</td><td style="color: #A6A6A6;">90.94</td><td style="color: #A6A6A6;">94.13</td><td style="color: #A6A6A6; border-right: 2px solid black;">95.98</td>
+                <td style="color: #A6A6A6;">97.14</td><td style="color: #A6A6A6;">97.46</td><td style="color: #A6A6A6;">98.73</td><td style="color: #A6A6A6; border-right: 2px solid black;">99.05</td>
+              </tr>
+              <tr>
+                <td style="border-right: 2px solid black; padding: 5px;">pretrained (\( I^l \))</td>
+                <td>84.60</td><td>88.85</td><td>91.89</td><td style="border-right: 2px solid black;">93.68</td>
+                <td>67.90</td><td>73.88</td><td>80.40</td><td style="border-right: 2px solid black;">84.24</td>
+                <td>89.21</td><td>92.06</td><td>95.87</td><td style="border-right: 2px solid black;">96.51</td>
+              </tr>
+              <tr>
+                <td style="border-right: 2px solid black; padding: 5px;">finetuned</td>
+                <td style="color: #9C0006;">-0.22</td><td style="color: #9C0006;">-0.57</td><td style="color: #9C0006;">-0.60</td><td style="color: #9C0006; border-right: 2px solid black;">-0.76</td>
+                <td>+0.04</td><td style="color: #9C0006;">-0.40</td><td style="color: #9C0006;">-0.76</td><td style="color: #9C0006; border-right: 2px solid black;">-0.04</td>
+                <td style="color: #9C0006;">-0.63</td><td>0.00</td><td style="color: #9C0006;">-0.95</td><td style="border-right: 2px solid black;">0.00</td>
+              </tr>
+              <tr style="border-bottom: 2px solid black;">
+                <td style="border-right: 2px solid black; padding: 5px;"><b>ICKD</b></td>
+                <td style="color: #548330;"><b>+0.52</b></td><td style="color: #548330;"><b>+0.45</b></td><td style="color: #548330;"><b>+0.20</b></td><td style="color: #548330; border-right: 2px solid black;"><b>+0.30</b></td>
+                <td style="color: #548330;"><b>+1.56</b></td><td style="color: #548330;"><b>+1.81</b></td><td style="color: #548330;"><b>+1.09</b></td><td style="color: #548330; border-right: 2px solid black;"><b>+1.20</b></td>
+                <td style="color: #548330;"><b>+1.59</b></td><td style="color: #548330;"><b>+1.27</b></td><td style="color: #548330;"><b>+0.32</b></td><td style="border-right: 2px solid black;"><b>0.00</b></td>
+              </tr>
+
+              <!-- NetVLAD Rows -->
+              <tr>
+                <td rowspan="4" style="border-right: 2px solid black; padding: 5px;">NetVLAD</td>
+                <td style="color: #A6A6A6; border-right: 2px solid black; padding: 5px;">pretrained (\( I^h \))</td>
+                <td style="color: #A6A6A6;">49.29</td><td style="color: #A6A6A6;">55.24</td><td style="color: #A6A6A6;">62.07</td><td style="color: #A6A6A6; border-right: 2px solid black;">67.29</td>
+                <td style="color: #A6A6A6;">5.51</td><td style="color: #A6A6A6;">6.67</td><td style="color: #A6A6A6;">8.62</td><td style="color: #A6A6A6; border-right: 2px solid black;">11.38</td>
+                <td style="color: #A6A6A6;">60.63</td><td style="color: #A6A6A6;">63.81</td><td style="color: #A6A6A6;">69.21</td><td style="color: #A6A6A6; border-right: 2px solid black;">74.29</td>
+              </tr>
+              <tr>
+                <td style="border-right: 2px solid black; padding: 5px;">pretrained (\( I^l \))</td>
+                <td>32.60</td><td>37.67</td><td>44.92</td><td style="border-right: 2px solid black;">50.13</td>
+                <td>1.99</td><td>3.01</td><td>4.93</td><td style="border-right: 2px solid black;">7.07</td>
+                <td>27.94</td><td>33.02</td><td>41.90</td><td style="border-right: 2px solid black;">47.94</td>
+              </tr>
+              <tr>
+                <td style="border-right: 2px solid black; padding: 5px;">finetuned</td>
+                <td>+0.03</td><td>+0.01</td><td style="color: #9C0006;">-0.02</td><td style="color: #9C0006; border-right: 2px solid black;">-0.01</td>
+                <td>0.00</td><td>0.00</td><td>0.00</td><td style="border-right: 2px solid black;">0.00</td>
+                <td>0.00</td><td>0.00</td><td>0.00</td><td style="border-right: 2px solid black;">0.00</td>
+              </tr>
+              <tr style="border-bottom: 2px solid black;">
+                <td style="border-right: 2px solid black; padding: 5px;"><b>MSE</b></td>
+                <td style="color: #548330;"><b>+4.46</b></td><td style="color: #548330;"><b>+5.32</b></td><td style="color: #548330;"><b>+5.09</b></td><td style="color: #548330; border-right: 2px solid black;"><b>+5.01</b></td>
+                <td style="color: #548330;"><b>+0.54</b></td><td style="color: #548330;"><b>+0.43</b></td><td style="color: #9C0006;"><b>-0.18</b></td><td style="color: #9C0006; border-right: 2px solid black;"><b>-0.72</b></td>
+                <td style="color: #548330;"><b>+8.25</b></td><td style="color: #548330;"><b>+6.35</b></td><td style="color: #548330;"><b>+6.03</b></td><td style="color: #548330; border-right: 2px solid black;"><b>+5.08</b></td>
+              </tr>
+
+              <!-- AnyLoc Rows -->
+              <tr>
+                <td rowspan="3" style="border-right: 2px solid black; padding: 5px;">AnyLoc</td>
+                <td style="color: #A6A6A6; border-right: 2px solid black; padding: 5px;">pretrained (\( I^h \))</td>
+                <td style="color: #A6A6A6;">56.51</td><td style="color: #A6A6A6;">62.31</td><td style="color: #A6A6A6;">68.28</td><td style="color: #A6A6A6; border-right: 2px solid black;">72.89</td>
+                <td style="color: #A6A6A6;">12.90</td><td style="color: #A6A6A6;">16.23</td><td style="color: #A6A6A6;">20.18</td><td style="color: #A6A6A6; border-right: 2px solid black;">24.28</td>
+                <td style="color: #A6A6A6;">88.25</td><td style="color: #A6A6A6;">91.11</td><td style="color: #A6A6A6;">94.92</td><td style="color: #A6A6A6; border-right: 2px solid black;">96.83</td>
+              </tr>
+              <tr>
+                <td style="border-right: 2px solid black; padding: 5px;">pretrained (\( I^l \))</td>
+                <td>48.04</td><td>56.45</td><td>63.84</td><td style="border-right: 2px solid black;">69.17</td>
+                <td>10.11</td><td>12.97</td><td>17.86</td><td style="border-right: 2px solid black;">21.92</td>
+                <td>83.49</td><td>87.30</td><td>91.75</td><td style="border-right: 2px solid black;">95.87</td>
+              </tr>
+              <tr style="border-bottom: 2px solid black;">
+                <td style="border-right: 2px solid black; padding: 5px;"><b>ICKD + Triplet</b></td>
+                <td style="color: #548330;"><b>+0.99</b></td><td style="color: #548330;"><b>+1.54</b></td><td style="color: #548330;"><b>+2.68</b></td><td style="color: #548330; border-right: 2px solid black;"><b>+2.44</b></td>
+                <td style="color: #548330;"><b>+1.74</b></td><td style="color: #548330;"><b>+1.88</b></td><td style="color: #548330;"><b>+1.52</b></td><td style="color: #548330; border-right: 2px solid black;"><b>+2.54</b></td>
+                <td style="color: #9C0006;"><b>-5.71</b></td><td style="color: #9C0006;"><b>-1.59</b></td><td style="color: #548330;"><b>+1.59</b></td><td style="color: #9C0006; border-right: 2px solid black;"><b>-0.95</b></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="has-text-justified" style="font-size: 16px; margin-top: 20px;">
+          This table summarizes the effectiveness of the proposed loss functions for various VPR methods across different datasets. Distillation generally produces positive recall rate improvements with pretrained weights, outperforming fine-tuning in consistency and impact. Notably, the results for MixVPR and CricaVPR on Nordland show the distinct advantage of distillation. Cases where distillation did not yield higher recall, such as NetVLAD on Nordland or AnyLoc on Tokyo 24/7, suggest unique interactions between these methods and datasets that might require additional analysis.
+        </p>
+        <!-- Image -->
+        <div class="image-container" style="display: flex; justify-content: center; margin-top: 20px;">
+          <img src="./static/images/figure3_loss_combos_multitopk.png" alt="Loss Combinations Image" style="width: 100%;">
+        </div>
+        <p class="has-text-justified" style="font-size: 16px; margin-top: 20px;">
+          The figure above further illustrates the impact of different loss combinations on VPR recall rates across methods. The consistent trends indicate that ICKD and MSE losses are generally effective, with a clear advantage for MixVPR and CricaVPR. While NetVLAD sees greater benefits from triplet loss on Nordland, ICKD and MSE prove to be the most reliable choices for maximizing VPR performance across methods and datasets.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<hr>
+
+<!-- Activation Maps -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-full-width">
+        
+        <h2 class="title is-3">Activation Maps</h2>
+        <center>
+          <!-- Here, the argument of the switchSlider function should be the name of the slider block, just without the "_block" part. -->
+          <button class="btn" id="msls_button" onclick="switchSlider('msls')">Mapillary</button>
+          <button class="btn" id="nordland_button" onclick="switchSlider('nordland')">Nordland</button>
+          <button class="btn" id="tokyo_button" onclick="switchSlider('tokyo')">Tokyo 24/7</button>
+          <br>
+          <br>
+        </center>
+        <div class="content" style="margin-top: 20px; font-size: 16px;">
+          <p>
+            The activation maps below illustrate the effects of distillation on the feature extraction process for each VPR method: <strong>CricaVPR</strong>, <strong>NetVLAD</strong>, and <strong>MixVPR</strong>. By visually highlighting the areas of focus in each method’s encoder, these maps reveal how distillation shifts attention toward more informative, distinct scene features, while minimizing the impact of less relevant background elements, such as sky and repetitive foreground patterns.
+          </p>
+        </div>
+        <!-- Sliders for msls -->
+        <div class="slider-block" id="msls_block">
+          <div class="query-image" style="text-align: center; margin-bottom: 20px;">
+            <h2>Query Image </h2>
+            <img id="query_image" src="./static/images/sliders/heatmaps/msls/query_image.jpg" alt="Query Image" style="width: 70%; max-width: 400px; display: block; margin: 0 auto;">
+          </div>
+          <br>
+          <div class="sliders-container" style="display: flex; gap: 20px; justify-content: center;">
+            <div class="slider-wrapper">
+              <h2>CricaVPR </h2>
+              <div id="msls_cricavpr"></div>
+            </div>
+            <div class="slider-wrapper">
+              <h2>NetVLAD</h2>
+              <div id="msls_netvlad"></div>
+            </div>
+            <div class="slider-wrapper">
+              <h2>MixVPR</h2>
+              <div id="msls_mixvpr"></div>
+            </div>
+          </div>
+        </div>
+
+         <!-- Sliders for Nordland -->
+         <div class="slider-block" id="nordland_block">
+          <div class="query-image" style="text-align: center; margin-bottom: 20px;">
+            <h2>Query Image </h2>
+            <img id="nordland_query_image" src="./static/images/sliders/heatmaps/nordland/query_image.jpg" alt="Query Image" style="width: 70%; max-width: 400px; display: block; margin: 0 auto;">
+          </div>
+          <br>
+          <div class="sliders-container" style="display: flex; gap: 20px; justify-content: center;">
+            <div class="slider-wrapper">
+              <h2>CricaVPR</h2>
+              <div id="nordland_cricavpr"></div>
+            </div>
+            <div class="slider-wrapper">
+              <h2>NetVLAD</h2>
+              <div id="nordland_netvlad"></div>
+            </div>
+            <div class="slider-wrapper">
+              <h2>MixVPR</h2>
+              <div id="nordland_mixvpr"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sliders for Tokyo 24/7 -->
+        <div class="slider-block" id="tokyo_block">
+          <div class="query-image" style="text-align: center; margin-bottom: 20px;">
+            <h2>Query Image </h2>
+            <img id="tokyo_query_image" src="./static/images/sliders/heatmaps/tokyo247/query_image.jpg" alt="Query Image" style="width: 70%; max-width: 400px; display: block; margin: 0 auto;">
+          </div>
+          <br>
+          <div class="sliders-container" style="display: flex; gap: 20px; justify-content: center;">
+            <div class="slider-wrapper">
+              <h2>CricaVPR</h2>
+              <div id="tokyo_cricavpr"></div>
+            </div>
+            <div class="slider-wrapper">
+              <h2>NetVLAD</h2>
+              <div id="tokyo_netvlad"></div>
+            </div>
+            <div class="slider-wrapper">
+              <h2>MixVPR</h2>
+              <div id="tokyo_mixvpr"></div>
+            </div>
+          </div>
+        </div>
+
+        <script src="https://cdn.knightlab.com/libs/juxtapose/latest/js/juxtapose.min.js"></script>
+        <link rel="stylesheet" href="https://cdn.knightlab.com/libs/juxtapose/latest/css/juxtapose.css">
+        <script src="./static/js/juxtapose-slider.js"></script> <!-- Include your slider.js file
+         
+        <!-- script for the sliders -->
+        <script>
+          // Slider configurations
+          let slider_dict = {
+            msls: 
+            [
+              {
+                elementId: '#msls_cricavpr',
+                images: [
+                  { src: './static/images/sliders/heatmaps/msls/CricaVPR_pretrained.jpg', label: 'pretrained' },
+                  { src: './static/images/sliders/heatmaps/msls/CricaVPR_distilled.jpg', label: 'distilled' }
+                ],
+                options: sliderOptions
+              },
+              {
+                elementId: '#msls_netvlad',
+                images: [
+                  { src: './static/images/sliders/heatmaps/msls/NetVLAD_pretrained.jpg', label: 'pretrained' },
+                  { src: './static/images/sliders/heatmaps/msls/NetVLAD_distilled.jpg', label: 'distilled' }
+                ],
+                options: sliderOptions
+              },
+              {
+                elementId: '#msls_mixvpr',
+                images: [
+                  { src: './static/images/sliders/heatmaps/msls/MixVPR_pretrained.jpg', label: 'pretrained' },
+                  { src: './static/images/sliders/heatmaps/msls/MixVPR_distilled.jpg', label: 'distilled' }
+                ],
+                options: sliderOptions
+              }
+            ],
+            nordland: 
+            [
+              {
+                elementId: '#nordland_cricavpr',
+                images: [
+                  { src: './static/images/sliders/heatmaps/nordland/CricaVPR_pretrained.jpg', label: 'pretrained' },
+                  { src: './static/images/sliders/heatmaps/nordland/CricaVPR_distilled.jpg', label: 'distilled' }
+                ],
+                options: sliderOptions
+              },
+              {
+                elementId: '#nordland_netvlad',
+                images: [
+                  { src: './static/images/sliders/heatmaps/nordland/NetVLAD_pretrained.jpg', label: 'pretrained' },
+                  { src: './static/images/sliders/heatmaps/nordland/NetVLAD_distilled.jpg', label: 'distilled' }
+                ],
+                options: sliderOptions
+              },
+              {
+                elementId: '#nordland_mixvpr',
+                images: [
+                  { src: './static/images/sliders/heatmaps/nordland/MixVPR_pretrained.jpg', label: 'pretrained' },
+                  { src: './static/images/sliders/heatmaps/nordland/MixVPR_distilled.jpg', label: 'distilled' }
+                ],
+                options: sliderOptions
+              }
+            ],
+            tokyo: 
+            [
+              {
+                elementId: '#tokyo_cricavpr',
+                images: [
+                  { src: './static/images/sliders/heatmaps/tokyo247/CricaVPR_pretrained.jpg', label: 'pretrained' },
+                  { src: './static/images/sliders/heatmaps/tokyo247/CricaVPR_distilled.jpg', label: 'distilled' }
+                ],
+                options: sliderOptions
+              },
+              {
+                elementId: '#tokyo_netvlad',
+                images: [
+                  { src: './static/images/sliders/heatmaps/tokyo247/NetVLAD_pretrained.jpg', label: 'pretrained' },
+                  { src: './static/images/sliders/heatmaps/tokyo247/NetVLAD_distilled.jpg', label: 'distilled' }
+                ],
+                options: sliderOptions
+              },
+              {
+                elementId: '#tokyo_mixvpr',
+                images: [
+                  { src: './static/images/sliders/heatmaps/tokyo247/MixVPR_pretrained.jpg', label: 'pretrained' },
+                  { src: './static/images/sliders/heatmaps/tokyo247/MixVPR_distilled.jpg', label: 'distilled' }
+                ],
+                options: sliderOptions
+              }
+            ],
+          };
+          
+          // Show msls_block by default
+          document.addEventListener('DOMContentLoaded', () => {
+            switchSlider('msls'); 
+          });
+
+          // Function to show the specific div based on button click
+          function switchSlider(block_id) {
+              // Remove 'active' class from all buttons to reset color
+              document.getElementById('msls_button').classList.remove('active');
+              document.getElementById('nordland_button').classList.remove('active');
+              document.getElementById('tokyo_button').classList.remove('active');
+
+              // Add 'active' class to the clicked button so that it will have a different color when its content is present
+              document.getElementById(block_id+'_button').classList.add('active');
+
+              // Select all content divs and hide them
+              contentDivs = document.querySelectorAll('.slider-block');
+              contentDivs.forEach(div => {
+                  div.classList.remove('show'); // Hide all divs
+              });
+  
+              // Show the selected div with a fade effect
+              selectedDiv = document.getElementById(block_id+'_block');
+              selectedDiv.classList.add('show');
+
+              if (!selectedDiv.initialized) {
+                initializeSliders(slider_dict[block_id]);
+                selectedDiv.initialized = true;
+              }
+          }
+
+        </script>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr>
+
+<!-- Video Section -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3 has-text-centered">Navigation Demo Video</h2>
+        <p class="has-text-justified" style="font-size: 15px;">
+          This video demonstrates the navigation capabilities of the VPR system. Observe how the system accurately guides the user through complex environments with real-time visual recognition and localization.
+        </p>
+        
+        <!-- Video Embed -->
+        <div class="video-container" style="display: flex; justify-content: center; margin-top: 20px;">
+          <video width="80%" controls>
+            <source src="./static/videos/navigation.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr>
+
+<!-- BibTeX -->
+<section class="section" id="BibTeX"> 
+  <div class="container is-max-desktop content">
+    <center>
+    <h2 id="bibtexTitle" class="title">BibTeX</h2>
+    <button id="copyButton" onclick="copyToClipboard()">
+      <i class="fas fa-copy"></i>
+    </button>
+    <br>
+    <pre style="text-align: left";><code id="bibtexInfo">@misc{yang2024distillationimprovesvisualplace,
+      title={Distillation Improves Visual Place Recognition for Low Quality Images}, 
+      author={Anbang Yang and Ge Jin and Junjie Huang and Yao Wang and John-Ross Rizzo and Chen Feng},
+      year={2024},
+      eprint={2310.06906},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2310.06906}, 
+}</code></pre>
+  </center>
+  </div>
+</section>
+
+<!-- Acknowledgements   -->
+<section class="section" id="Acknowledgements">
+  <div class="container is-max-desktop content">
+    <h2 class="title">Acknowledgements</h2>
+    We would like to express our gratitude to Zezheng Li and Liyuan Geng for their valuable assistance with test data preprocessing. Their contributions helped facilitate the progress of this work.
+  </div>
+</section>
+          
+<!-- Footer -->       
+<footer class="footer">
+  <div class="container">
+    <div class="content has-text-centered">
+    </div>
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+          <p>
+            This website is licensed under a <a rel="license"
+                                                href="http://creativecommons.org/licenses/by-sa/4.0/">Creative
+            Commons Attribution-ShareAlike 4.0 International License</a>.
+            This webpage template is from <a href="https://github.com/nerfies/nerfies.github.io">Nerfies</a>. 
+            We sincerely thank <a href="https://keunhong.com/">Keunhong Park</a> for developing and open-sourcing this template.
+            This website is inspired by the project page of <a href="https://cat3d.github.io/">CAT3D</a>, <a href="https://armlabstanford.github.io/touch-gs">Touch-GS</a> and <a href="https://baegwangbin.github.io/DSINE/">DSINE</a>.
+          </p>
+        </div>
+      </div>
+          </p>
+        </div>
+      </div>
+  </div>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.0/es5/tex-mml-chtml.min.js"></script>
+</body>
+
+</html>
